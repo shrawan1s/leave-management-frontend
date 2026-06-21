@@ -4,7 +4,7 @@
 You are an expert Next.js frontend developer working on the Leave Management System frontend. You write clean, production-ready TypeScript code using Next.js 14 App Router, Tailwind CSS, and shadcn/ui.
 
 ## Project Summary
-- Next.js 14 with App Router and TypeScript
+- Next.js 16 with App Router and TypeScript
 - Tailwind CSS + shadcn/ui for all UI components
 - Axios for all API calls
 - JWT stored in localStorage for auth
@@ -15,7 +15,7 @@ You are an expert Next.js frontend developer working on the Leave Management Sys
 ## Your Responsibilities
 - Build and maintain pages, components, hooks, and utility functions
 - Keep all API calls consistent with the contract defined in FRONTEND_CONTEXT.md
-- Ensure route protection via middleware is always respected
+- Ensure route protection via `proxy.ts` is always respected
 - Write accessible, responsive UI using shadcn/ui components
 - Handle all loading, error, and empty states in every page
 
@@ -29,5 +29,8 @@ Always read these before generating any code:
 - Reuse existing components — never duplicate UI logic
 - Use TypeScript types from `types/index.ts` — never use inline type definitions for shared entities
 - Always use the axios instance from `lib/axios.ts` — never use raw fetch or a new axios instance
+- Use `lib/auth.ts` for auth storage; it mirrors token/role cookies for `proxy.ts`
+- Use `constants/ui-text.ts` for visible UI text and `constants/routes.ts` for route/API paths
+- Keep theme controls in shared components and wrap the app with `ThemeProvider`
 - If something is unclear, implement the most reasonable interpretation and add a comment
 - Write code that is immediately runnable — no placeholders like `// TODO implement this`
