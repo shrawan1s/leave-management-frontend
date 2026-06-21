@@ -61,6 +61,10 @@
 - Employee routes: `/dashboard`, `/apply`, `/my-leaves`
 - Admin routes: `/admin/dashboard`, `/admin/requests`
 - Auth routes: `/login`, `/register`
+- Protected employee and admin route groups must use the shared `DashboardShell` for page switching
+- Protected logout must go through the shared `DashboardShell` confirmation dialog
+- Dashboard content should use the available viewport width on desktop and responsive padding from `DashboardShell`
+- Sidebar labels and route targets must come from `constants/ui-text.ts` and `constants/routes.ts`
 - NEVER link an employee to an admin route or vice versa
 - Use Next.js `<Link>` for all internal navigation — never use `window.location.href` except in the axios interceptor
 
@@ -79,6 +83,13 @@
 - For leave form: validate `endDate >= startDate` and `days <= leaveBalance` before API call
 - Show field-level error messages, not just toast errors
 - Disable submit button while request is in flight
+- Employee leave API calls must go through `lib/api/leave.ts`
+- Employee leave pages must use hooks/containers, not direct API calls in page files
+- Admin leave API calls must go through `lib/api/leave.ts`
+- Admin leave pages must use hooks/containers, not direct API calls in page files
+- Admin approve/reject actions must only be shown for `PENDING` requests
+- Admin request rows must expose view, edit, and delete actions through centralized dialogs
+- Leave tables must remain scroll-safe on narrow screens instead of forcing columns to shrink or overlap
 
 ## Date Rules
 - Display all dates in `DD MMM YYYY` format (e.g. `22 Jun 2026`)
