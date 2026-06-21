@@ -14,4 +14,12 @@ export const API_ENDPOINTS = {
   AUTH_ME: "/api/auth/me",
   AUTH_REFRESH: "/api/auth/refresh",
   AUTH_REGISTER: "/api/auth/register",
+  LEAVE_BALANCE: "/api/leave/balance",
+  LEAVE_CREATE: "/api/leave",
+  LEAVE_MY: "/api/leave/my",
+  LEAVE_ALL: "/api/leave/all",
+  LEAVE_STATS: "/api/leave/stats",
+  LEAVE_STATUS: (leaveRequestId: string) =>
+    `/api/leave/${leaveRequestId}/status`,
+  LEAVE_REQUEST: (leaveRequestId: string) => `/api/leave/${leaveRequestId}`,
 } as const;
