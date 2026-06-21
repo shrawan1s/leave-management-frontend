@@ -14,7 +14,7 @@ This is the frontend for the Leave Management System built as part of the Nrolle
 
 | Layer | Technology |
 |---|---|
-| Framework | Next.js 14 (App Router, TypeScript) |
+| Framework | Next.js 16 (App Router, TypeScript) |
 | Styling | Tailwind CSS + shadcn/ui |
 | HTTP Client | Axios |
 | Auth | JWT stored in localStorage |
@@ -77,15 +77,21 @@ src/
 │   ├── axios.ts        → Axios instance with auth interceptor
 │   └── auth.ts         → Token/user helpers
 ├── hooks/              → useAuth, useLeave
+├── constants/          → Routes, API endpoints, UI text
 ├── types/              → Shared TypeScript interfaces
-└── middleware.ts       → Route protection by role
+└── proxy.ts            → Route protection by role
 ```
 
 ### Auth Flow
 - Employee registers via 2-step onboarding form → JWT stored in localStorage
 - Admin logs in with seeded credentials
-- Middleware protects routes by role — wrong role gets redirected
+- Next proxy protects routes by role — wrong role gets redirected
 - Axios interceptor auto-attaches Bearer token to every request
+- Axios interceptor refreshes expired access tokens through `/api/auth/refresh` when a refresh token is available.
+- Logout calls `/api/auth/logout`, then clears local browser auth state.
+- Auth helpers store the JWT, refresh token, and user in localStorage and mirror token/role to cookies so proxy-based route protection can run before the page loads.
+- Visible UI text comes from `src/constants/ui-text.ts`; routes and API endpoints come from `src/constants/routes.ts`.
+- Theme switching is handled through `next-themes`, `ThemeProvider`, and the shared `ThemeToggle` component.
 
 ### Page Structure
 
@@ -118,6 +124,7 @@ All AI-generated code was reviewed, tested, and adjusted manually.
 ## Assumptions
 
 - JWT is stored in `localStorage` (no httpOnly cookies for simplicity)
+- Refresh token is stored in `localStorage` for the same assignment-level auth model.
 - Admin credentials are fixed — seeded directly in the backend DB
 - Leave balance is displayed in real time from the backend (not cached locally)
 - Days are shown as calendar days inclusive — no weekend exclusions

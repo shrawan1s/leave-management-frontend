@@ -14,6 +14,7 @@
 - shadcn/ui components live in `components/ui/` — never modify them directly
 - Hooks go in `hooks/`
 - Utility functions go in `lib/`
+- UI text, route paths, and API endpoint paths go in `constants/`
 - All TypeScript types go in `types/index.ts`
 
 ## Naming Conventions
@@ -43,6 +44,7 @@
 - ALWAYS use the axios instance from `lib/axios.ts`
 - NEVER use raw `fetch()` or create a new `axios` instance
 - NEVER hardcode the API base URL — it comes from `process.env.NEXT_PUBLIC_API_URL`
+- NEVER hardcode API endpoint paths in feature code — use constants from `constants/routes.ts`
 - ALWAYS wrap API calls in try/catch
 - ALWAYS show a toast (sonner) on both success and error
 
@@ -50,8 +52,10 @@
 - ALWAYS use helpers from `lib/auth.ts` for token and user operations
 - NEVER read/write localStorage for auth directly — go through `lib/auth.ts`
 - NEVER store the password anywhere on the frontend
-- Middleware in `middleware.ts` handles all route protection — do not add redirect logic inside pages
+- Next proxy in `proxy.ts` handles all route protection — do not add redirect logic inside pages
 - On 401 response, the axios interceptor handles logout and redirect — do not duplicate this logic
+- On 401 response, the axios interceptor attempts `/api/auth/refresh` before clearing auth state
+- `lib/auth.ts` is the only place that reads/writes auth localStorage and auth cookies
 
 ## Routing Rules
 - Employee routes: `/dashboard`, `/apply`, `/my-leaves`
@@ -62,6 +66,7 @@
 
 ## Styling Rules
 - Use Tailwind utility classes only — no inline styles
+- Visible UI text must come from `constants/ui-text.ts`, not inline component strings
 - Use shadcn/ui `cn()` utility from `lib/utils.ts` for conditional classes
 - Status colors must be consistent everywhere:
   - PENDING → yellow
