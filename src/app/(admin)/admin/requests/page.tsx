@@ -1,11 +1,12 @@
-import { ProtectedPageShell } from "@/components/shared/ProtectedPageShell";
+import { AdminRequestsContainer } from "@/components/leave/AdminRequestsContainer";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { UI_TEXT } from "@/constants/ui-text";
 
 export default function AdminRequestsPage() {
   return (
-    <ProtectedPageShell
-      body={UI_TEXT.PLACEHOLDERS.ADMIN_REQUESTS_BODY}
-      title={UI_TEXT.PLACEHOLDERS.ADMIN_REQUESTS_TITLE}
-    />
+    <main className="flex w-full flex-col gap-6">
+      <PageHeader title={UI_TEXT.PLACEHOLDERS.ADMIN_REQUESTS_TITLE} />
+      <AdminRequestsContainer />
+    </main>
   );
 }
