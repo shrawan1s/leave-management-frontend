@@ -13,7 +13,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UI_TEXT } from "@/constants/ui-text";
-import { calculateInclusiveDays, formatDateInputValue } from "@/lib/date";
+import {
+  calculateInclusiveDays,
+  formatDateInputValue,
+  getTodayInputValue,
+} from "@/lib/date";
 import type {
   EditLeaveRequestDialogProps,
   LeaveRequest,
@@ -66,6 +70,7 @@ function EditLeaveRequestForm({
     reason: leaveRequest.reason,
   }));
   const [errors, setErrors] = useState<LeaveFormErrors>({});
+  const todayInputValue = useMemo(() => getTodayInputValue(), []);
   const requestedDays = useMemo(
     () => calculateInclusiveDays(values.startDate, values.endDate),
     [values.endDate, values.startDate],
@@ -80,10 +85,14 @@ function EditLeaveRequestForm({
 
     if (!values.startDate) {
       nextErrors.startDate = UI_TEXT.VALIDATION.START_DATE_REQUIRED;
+    } else if (values.startDate < todayInputValue) {
+      nextErrors.startDate = UI_TEXT.VALIDATION.PAST_DATE_NOT_ALLOWED;
     }
 
     if (!values.endDate) {
       nextErrors.endDate = UI_TEXT.VALIDATION.END_DATE_REQUIRED;
+    } else if (values.endDate < todayInputValue) {
+      nextErrors.endDate = UI_TEXT.VALIDATION.PAST_DATE_NOT_ALLOWED;
     }
 
     if (values.startDate && values.endDate && requestedDays < 1) {
@@ -133,6 +142,7 @@ function EditLeaveRequestForm({
           <Label htmlFor="editStartDate">{UI_TEXT.LEAVE.START_DATE}</Label>
           <Input
             id="editStartDate"
+            min={todayInputValue}
             type="date"
             value={values.startDate}
             aria-invalid={Boolean(errors.startDate)}
@@ -148,6 +158,7 @@ function EditLeaveRequestForm({
           <Label htmlFor="editEndDate">{UI_TEXT.LEAVE.END_DATE}</Label>
           <Input
             id="editEndDate"
+            min={values.startDate || todayInputValue}
             type="date"
             value={values.endDate}
             aria-invalid={Boolean(errors.endDate)}

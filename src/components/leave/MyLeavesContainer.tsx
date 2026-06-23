@@ -6,6 +6,7 @@ import { EditLeaveRequestDialog } from "@/components/leave/EditLeaveRequestDialo
 import { EmployeeLeaveTable } from "@/components/leave/EmployeeLeaveTable";
 import { ViewLeaveRequestDialog } from "@/components/leave/ViewLeaveRequestDialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PaginationControls } from "@/components/shared/PaginationControls";
 import { UI_TEXT } from "@/constants/ui-text";
 import { useEmployeeLeave } from "@/hooks/useEmployeeLeave";
 import type { LeaveRequest, UpdateLeaveRequestPayload } from "@/types";
@@ -16,6 +17,9 @@ export function MyLeavesContainer() {
     isLoading,
     isSubmitting,
     leaveRequests,
+    pagination,
+    updateLimit,
+    updatePage,
     updateLeaveRequest,
   } = useEmployeeLeave();
   const [selectedViewLeaveRequest, setSelectedViewLeaveRequest] =
@@ -49,13 +53,21 @@ export function MyLeavesContainer() {
         <CardHeader>
           <CardTitle>{UI_TEXT.LEAVE.MY_LEAVES_TITLE}</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="grid gap-4">
           <EmployeeLeaveTable
             emptyMessage={UI_TEXT.LEAVE.EMPTY_TABLE}
             leaveRequests={isLoading ? [] : leaveRequests}
             onDelete={setSelectedDeleteLeaveRequest}
             onEdit={setSelectedEditLeaveRequest}
             onView={setSelectedViewLeaveRequest}
+          />
+          <PaginationControls
+            limit={pagination.limit}
+            page={pagination.page}
+            total={pagination.total}
+            totalPages={pagination.totalPages}
+            onLimitChange={updateLimit}
+            onPageChange={updatePage}
           />
         </CardContent>
       </Card>

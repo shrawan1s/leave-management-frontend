@@ -16,6 +16,13 @@ export function formatDateInputValue(value: string): string {
   return date.toISOString().slice(0, 10);
 }
 
+export function getTodayInputValue(): string {
+  const today = new Date();
+  const timezoneOffset = today.getTimezoneOffset() * 60 * 1000;
+
+  return new Date(today.getTime() - timezoneOffset).toISOString().slice(0, 10);
+}
+
 export function calculateInclusiveDays(startDate: string, endDate: string) {
   if (!startDate || !endDate) {
     return 0;

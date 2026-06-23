@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ROUTES } from "@/constants/routes";
@@ -8,48 +8,62 @@ import * as leaveApi from "@/lib/api/leave";
 import { getApiErrorMessage } from "@/lib/axios";
 import type {
   CreateLeavePayload,
+  LeaveListQuery,
   LeaveRequest,
+  PaginatedLeaveRequests,
   UpdateLeaveRequestPayload,
 } from "@/types";
 
-export function useEmployeeLeave() {
+const defaultPagination: PaginatedLeaveRequests = {
+  leaveRequests: [],
+  total: 0,
+  page: 1,
+  limit: 10,
+  totalPages: 0,
+};
+
+export function useEmployeeLeave(initialQuery: LeaveListQuery = {}) {
   const router = useRouter();
+  const [query, setQuery] = useState<LeaveListQuery>(() => ({
+    page: initialQuery.page ?? 1,
+    limit: initialQuery.limit ?? 10,
+  }));
   const [leaveBalance, setLeaveBalance] = useState(0);
   const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>([]);
+  const [pagination, setPagination] =
+    useState<PaginatedLeaveRequests>(defaultPagination);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const recentLeaveRequests = useMemo(
-    () => leaveRequests.slice(0, 5),
-    [leaveRequests],
-  );
-
-  const loadEmployeeLeave = useCallback(async () => {
+  const loadEmployeeLeave = useCallback(async (nextQuery = query) => {
     setIsLoading(true);
 
     try {
       const [balanceResponse, leavesResponse] = await Promise.all([
         leaveApi.getLeaveBalance(),
-        leaveApi.getMyLeaves(),
+        leaveApi.getMyLeaves(nextQuery),
       ]);
 
       setLeaveBalance(balanceResponse.data.leaveBalance);
       setLeaveRequests(leavesResponse.data.leaveRequests);
+      setPagination(leavesResponse.data);
     } catch (error) {
       toast.error(getApiErrorMessage(error));
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [query]);
 
   useEffect(() => {
     let isActive = true;
 
     async function loadInitialEmployeeLeave() {
+      setIsLoading(true);
+
       try {
         const [balanceResponse, leavesResponse] = await Promise.all([
           leaveApi.getLeaveBalance(),
-          leaveApi.getMyLeaves(),
+          leaveApi.getMyLeaves(query),
         ]);
 
         if (!isActive) {
@@ -58,6 +72,7 @@ export function useEmployeeLeave() {
 
         setLeaveBalance(balanceResponse.data.leaveBalance);
         setLeaveRequests(leavesResponse.data.leaveRequests);
+        setPagination(leavesResponse.data);
       } catch (error) {
         if (isActive) {
           toast.error(getApiErrorMessage(error));
@@ -74,6 +89,14 @@ export function useEmployeeLeave() {
     return () => {
       isActive = false;
     };
+  }, [query]);
+
+  const updatePage = useCallback((page: number) => {
+    setQuery((current) => ({ ...current, page }));
+  }, []);
+
+  const updateLimit = useCallback((limit: number) => {
+    setQuery((current) => ({ ...current, limit, page: 1 }));
   }, []);
 
   const createLeave = useCallback(
@@ -107,7 +130,7 @@ export function useEmployeeLeave() {
         );
 
         toast.success(response.message);
-        await loadEmployeeLeave();
+        await loadEmployeeLeave(query);
       } catch (error) {
         toast.error(getApiErrorMessage(error));
         throw error;
@@ -115,7 +138,7 @@ export function useEmployeeLeave() {
         setIsSubmitting(false);
       }
     },
-    [loadEmployeeLeave],
+    [loadEmployeeLeave, query],
   );
 
   const deleteLeaveRequest = useCallback(
@@ -126,7 +149,7 @@ export function useEmployeeLeave() {
         const response = await leaveApi.deleteLeaveRequest(leaveRequestId);
 
         toast.success(response.message);
-        await loadEmployeeLeave();
+        await loadEmployeeLeave(query);
       } catch (error) {
         toast.error(getApiErrorMessage(error));
         throw error;
@@ -134,7 +157,7 @@ export function useEmployeeLeave() {
         setIsSubmitting(false);
       }
     },
-    [loadEmployeeLeave],
+    [loadEmployeeLeave, query],
   );
 
   return {
@@ -144,8 +167,10 @@ export function useEmployeeLeave() {
     isSubmitting,
     leaveBalance,
     leaveRequests,
-    recentLeaveRequests,
+    pagination,
     reload: loadEmployeeLeave,
+    updateLimit,
+    updatePage,
     updateLeaveRequest,
   };
 }

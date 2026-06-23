@@ -108,17 +108,17 @@ src/
 Protected employee and admin route groups use the shared `DashboardShell` sidebar. The shell owns role-specific navigation, active route highlighting, theme toggle access, logout confirmation, and full-width responsive content spacing.
 
 ### Employee Leave UI
-- `/dashboard` fetches leave balance and the recent 5 employee requests.
+- `/dashboard` fetches leave balance and the recent 10 employee requests.
 - `/apply` fetches current balance, disables submission until balance is loaded, validates date range/reason/balance, and submits `POST /api/leave`.
-- `/my-leaves` fetches `GET /api/leave/my` and renders the employee leave history table.
+- `/my-leaves` fetches paginated `GET /api/leave/my` results, supports page-size changes, and renders the employee leave history table.
 - `/my-leaves` lets employees view every request and edit/delete their own pending requests.
 - Leave dates are displayed as `DD MMM YYYY`; API date payloads use `YYYY-MM-DD`.
 - Status display must use the shared `StatusBadge` component.
 - Leave tables keep a minimum table width with horizontal overflow on narrow screens instead of compressing columns.
 
 ### Admin Leave UI
-- `/admin/dashboard` fetches leave stats from `GET /api/leave/stats` and renders the request and employee totals.
-- `/admin/requests` fetches `GET /api/leave/all`, supports status/type filters, lets admins view request details, and lets admins approve/reject pending requests.
+- `/admin/dashboard` fetches leave stats from `GET /api/leave/stats`, fetches the recent 10 requests from `GET /api/leave/all?limit=10`, and renders employee/request totals plus the latest employee leave requests.
+- `/admin/requests` fetches paginated `GET /api/leave/all` results, supports page-size changes, status/type filters, lets admins view request details, and lets admins approve/reject pending requests.
 - Admin status changes submit `PATCH /api/leave/:id/status` with the selected action and optional admin comment.
 - Employee edits submit `PATCH /api/leave/:id`; employee deletes submit `DELETE /api/leave/:id`.
 - Admin request data and actions are owned by `useAdminLeave`; API functions stay in `src/lib/api/leave.ts`.

@@ -112,6 +112,7 @@ export const UI_TEXT = {
     FILTER_STATUS: "Status",
     FILTER_TYPE: "Type",
     PENDING: "Pending",
+    RECENT_REQUESTS_TITLE: "Recent leave requests",
     REJECTED: "Rejected",
     REQUESTS_TITLE: "All leave requests",
     STAT_APPROVED: "Approved",
@@ -129,6 +130,13 @@ export const UI_TEXT = {
   THEME: {
     LABEL: "Toggle theme",
   },
+  PAGINATION: {
+    ITEMS_PER_PAGE: "Rows per page",
+    NEXT: "Next",
+    PAGE: "Page",
+    PREVIOUS: "Previous",
+    SUMMARY: "Total records",
+  },
   VALIDATION: {
     CONFIRM_PASSWORD_MATCH: "Passwords must match",
     DEPARTMENT_MIN: "Department must be at least 2 characters",
@@ -136,6 +144,7 @@ export const UI_TEXT = {
     JOIN_DATE_REQUIRED: "Join date is required",
     NAME_MIN: "Name must be at least 2 characters",
     PASSWORD_MIN: "Password must be at least 6 characters",
+    PAST_DATE_NOT_ALLOWED: "Past dates cannot be selected",
     REASON_MIN: "Reason must be at least 10 characters",
     SELECT_LEAVE_TYPE: "Select a leave type",
     START_DATE_REQUIRED: "Start date is required",

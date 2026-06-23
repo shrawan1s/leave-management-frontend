@@ -6,6 +6,7 @@ import { ApproveRejectDialog } from "@/components/leave/ApproveRejectDialog";
 import { ViewLeaveRequestDialog } from "@/components/leave/ViewLeaveRequestDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PaginationControls } from "@/components/shared/PaginationControls";
 import { UI_TEXT } from "@/constants/ui-text";
 import { useAdminLeave } from "@/hooks/useAdminLeave";
 import type { LeaveRequest, LeaveStatus, LeaveType } from "@/types";
@@ -29,7 +30,10 @@ export function AdminRequestsContainer() {
     isLoading,
     isSubmitting,
     leaveRequests,
+    pagination,
     updateFilters,
+    updateLimit,
+    updatePage,
     updateStatus,
   } = useAdminLeave();
   const [selectedViewLeaveRequest, setSelectedViewLeaveRequest] =
@@ -74,7 +78,7 @@ export function AdminRequestsContainer() {
                   size="sm"
                   type="button"
                   variant={filters.status === status ? "default" : "outline"}
-                  onClick={() => updateFilters({ ...filters, status })}
+                  onClick={() => updateFilters({ status })}
                 >
                   {status ? UI_TEXT.ADMIN[status] : UI_TEXT.ADMIN.ALL}
                 </Button>
@@ -87,7 +91,7 @@ export function AdminRequestsContainer() {
                   size="sm"
                   type="button"
                   variant={filters.type === type ? "default" : "outline"}
-                  onClick={() => updateFilters({ ...filters, type })}
+                  onClick={() => updateFilters({ type })}
                 >
                   {type ? UI_TEXT.LEAVE[type] : UI_TEXT.ADMIN.ALL}
                 </Button>
@@ -99,6 +103,14 @@ export function AdminRequestsContainer() {
             leaveRequests={leaveRequests}
             onStatusAction={openStatusDialog}
             onView={setSelectedViewLeaveRequest}
+          />
+          <PaginationControls
+            limit={pagination.limit}
+            page={pagination.page}
+            total={pagination.total}
+            totalPages={pagination.totalPages}
+            onLimitChange={updateLimit}
+            onPageChange={updatePage}
           />
         </CardContent>
       </Card>

@@ -158,9 +158,22 @@ export interface LeaveStats {
   totalEmployees: number;
 }
 
-export interface LeaveFilters {
+export interface LeaveListQuery {
+  page?: number;
+  limit?: number;
+}
+
+export interface LeaveFilters extends LeaveListQuery {
   status?: LeaveStatus;
   type?: LeaveType;
+}
+
+export interface PaginatedLeaveRequests {
+  leaveRequests: LeaveRequest[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 export interface UpdateLeaveStatusPayload {
@@ -183,6 +196,21 @@ export interface AdminLeaveRequestsTableProps {
     status: "APPROVED" | "REJECTED",
   ) => void;
   onView: (leaveRequest: LeaveRequest) => void;
+}
+
+export interface AdminRecentRequestsTableProps {
+  emptyMessage: string;
+  isLoading: boolean;
+  leaveRequests: LeaveRequest[];
+}
+
+export interface PaginationControlsProps {
+  limit: number;
+  page: number;
+  totalPages: number;
+  total: number;
+  onLimitChange: (limit: number) => void;
+  onPageChange: (page: number) => void;
 }
 
 export interface ApproveRejectDialogProps {

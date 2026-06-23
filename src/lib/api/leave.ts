@@ -4,9 +4,11 @@ import type {
   ApiResponse,
   CreateLeavePayload,
   LeaveFilters,
+  LeaveListQuery,
   LeaveBalanceResponse,
   LeaveRequest,
   LeaveStats,
+  PaginatedLeaveRequests,
   UpdateLeaveRequestPayload,
   UpdateLeaveStatusPayload,
 } from "@/types";
@@ -21,12 +23,15 @@ export async function createLeave(
   return response.data;
 }
 
-export async function getMyLeaves(): Promise<
-  ApiResponse<{ leaveRequests: LeaveRequest[] }>
-> {
-  const response = await apiClient.get<
-    ApiResponse<{ leaveRequests: LeaveRequest[] }>
-  >(API_ENDPOINTS.LEAVE_MY);
+export async function getMyLeaves(
+  query: LeaveListQuery = {},
+): Promise<ApiResponse<PaginatedLeaveRequests>> {
+  const response = await apiClient.get<ApiResponse<PaginatedLeaveRequests>>(
+    API_ENDPOINTS.LEAVE_MY,
+    {
+      params: query,
+    },
+  );
 
   return response.data;
 }
@@ -43,12 +48,13 @@ export async function getLeaveBalance(): Promise<
 
 export async function getAllLeaveRequests(
   filters: LeaveFilters = {},
-): Promise<ApiResponse<{ leaveRequests: LeaveRequest[] }>> {
-  const response = await apiClient.get<
-    ApiResponse<{ leaveRequests: LeaveRequest[] }>
-  >(API_ENDPOINTS.LEAVE_ALL, {
+): Promise<ApiResponse<PaginatedLeaveRequests>> {
+  const response = await apiClient.get<ApiResponse<PaginatedLeaveRequests>>(
+    API_ENDPOINTS.LEAVE_ALL,
+    {
     params: filters,
-  });
+    },
+  );
 
   return response.data;
 }

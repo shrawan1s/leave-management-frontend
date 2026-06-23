@@ -8,6 +8,7 @@ import type {
   LeaveFilters,
   LeaveRequest,
   LeaveStats,
+  PaginatedLeaveRequests,
   UpdateLeaveStatusPayload,
 } from "@/types";
 
@@ -19,11 +20,26 @@ const emptyStats: LeaveStats = {
   totalEmployees: 0,
 };
 
-export function useAdminLeave() {
-  const [filters, setFilters] = useState<LeaveFilters>({});
+const defaultPagination: PaginatedLeaveRequests = {
+  leaveRequests: [],
+  total: 0,
+  page: 1,
+  limit: 10,
+  totalPages: 0,
+};
+
+export function useAdminLeave(initialFilters: LeaveFilters = {}) {
+  const [filters, setFilters] = useState<LeaveFilters>(() => ({
+    page: initialFilters.page ?? 1,
+    limit: initialFilters.limit ?? 10,
+    status: initialFilters.status,
+    type: initialFilters.type,
+  }));
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>([]);
+  const [pagination, setPagination] =
+    useState<PaginatedLeaveRequests>(defaultPagination);
   const [stats, setStats] = useState<LeaveStats>(emptyStats);
 
   const loadAdminLeave = useCallback(async (nextFilters = filters) => {
@@ -37,6 +53,7 @@ export function useAdminLeave() {
 
       setStats(statsResponse.data);
       setLeaveRequests(requestsResponse.data.leaveRequests);
+      setPagination(requestsResponse.data);
     } catch (error) {
       toast.error(getApiErrorMessage(error));
     } finally {
@@ -48,6 +65,8 @@ export function useAdminLeave() {
     let isActive = true;
 
     async function loadInitialAdminLeave() {
+      setIsLoading(true);
+
       try {
         const [statsResponse, requestsResponse] = await Promise.all([
           leaveApi.getLeaveStats(),
@@ -60,6 +79,7 @@ export function useAdminLeave() {
 
         setStats(statsResponse.data);
         setLeaveRequests(requestsResponse.data.leaveRequests);
+        setPagination(requestsResponse.data);
       } catch (error) {
         if (isActive) {
           toast.error(getApiErrorMessage(error));
@@ -79,7 +99,19 @@ export function useAdminLeave() {
   }, [filters]);
 
   const updateFilters = useCallback((nextFilters: LeaveFilters) => {
-    setFilters(nextFilters);
+    setFilters((current) => ({
+      ...current,
+      ...nextFilters,
+      page: nextFilters.page ?? 1,
+    }));
+  }, []);
+
+  const updatePage = useCallback((page: number) => {
+    setFilters((current) => ({ ...current, page }));
+  }, []);
+
+  const updateLimit = useCallback((limit: number) => {
+    setFilters((current) => ({ ...current, limit, page: 1 }));
   }, []);
 
   const updateStatus = useCallback(
@@ -109,8 +141,11 @@ export function useAdminLeave() {
     isLoading,
     isSubmitting,
     leaveRequests,
+    pagination,
     stats,
     updateFilters,
+    updateLimit,
+    updatePage,
     updateStatus,
   };
 }

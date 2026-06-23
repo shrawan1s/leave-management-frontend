@@ -6,7 +6,9 @@ import { UI_TEXT } from "@/constants/ui-text";
 import { useEmployeeLeave } from "@/hooks/useEmployeeLeave";
 
 export function EmployeeDashboard() {
-  const { isLoading, leaveBalance, recentLeaveRequests } = useEmployeeLeave();
+  const { isLoading, leaveBalance, leaveRequests } = useEmployeeLeave({
+    limit: 10,
+  });
 
   return (
     <div className="grid gap-6">
@@ -30,7 +32,7 @@ export function EmployeeDashboard() {
         <CardContent>
           <LeaveTable
             emptyMessage={UI_TEXT.LEAVE.EMPTY_RECENT}
-            leaveRequests={isLoading ? [] : recentLeaveRequests}
+            leaveRequests={isLoading ? [] : leaveRequests}
           />
         </CardContent>
       </Card>

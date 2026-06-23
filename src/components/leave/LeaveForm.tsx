@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UI_TEXT } from "@/constants/ui-text";
-import { calculateInclusiveDays } from "@/lib/date";
+import { calculateInclusiveDays, getTodayInputValue } from "@/lib/date";
 import type {
   LeaveFormErrors,
   LeaveFormProps,
@@ -31,6 +31,7 @@ export function LeaveForm({
 }: LeaveFormProps) {
   const [values, setValues] = useState<LeaveFormValues>(initialValues);
   const [errors, setErrors] = useState<LeaveFormErrors>({});
+  const todayInputValue = useMemo(() => getTodayInputValue(), []);
   const requestedDays = useMemo(
     () => calculateInclusiveDays(values.startDate, values.endDate),
     [values.endDate, values.startDate],
@@ -49,10 +50,14 @@ export function LeaveForm({
 
     if (!values.startDate) {
       nextErrors.startDate = UI_TEXT.VALIDATION.START_DATE_REQUIRED;
+    } else if (values.startDate < todayInputValue) {
+      nextErrors.startDate = UI_TEXT.VALIDATION.PAST_DATE_NOT_ALLOWED;
     }
 
     if (!values.endDate) {
       nextErrors.endDate = UI_TEXT.VALIDATION.END_DATE_REQUIRED;
+    } else if (values.endDate < todayInputValue) {
+      nextErrors.endDate = UI_TEXT.VALIDATION.PAST_DATE_NOT_ALLOWED;
     }
 
     if (values.startDate && values.endDate && requestedDays < 1) {
@@ -106,6 +111,7 @@ export function LeaveForm({
           <Label htmlFor="startDate">{UI_TEXT.LEAVE.START_DATE}</Label>
           <Input
             id="startDate"
+            min={todayInputValue}
             type="date"
             value={values.startDate}
             onChange={(event) => updateValue("startDate", event.target.value)}
@@ -119,6 +125,7 @@ export function LeaveForm({
           <Label htmlFor="endDate">{UI_TEXT.LEAVE.END_DATE}</Label>
           <Input
             id="endDate"
+            min={values.startDate || todayInputValue}
             type="date"
             value={values.endDate}
             onChange={(event) => updateValue("endDate", event.target.value)}
