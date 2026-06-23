@@ -15,6 +15,9 @@ const initialValues: LoginPayload = {
   password: "",
 };
 
+/**
+ * Login form with client-side validation and password visibility control.
+ */
 export function LoginForm() {
   const { isLoading, login } = useAuth();
   const [values, setValues] = useState<LoginPayload>(initialValues);

@@ -11,6 +11,9 @@ import { UI_TEXT } from "@/constants/ui-text";
 import { useEmployeeLeave } from "@/hooks/useEmployeeLeave";
 import type { LeaveRequest, UpdateLeaveRequestPayload } from "@/types";
 
+/**
+ * Owns employee leave history pagination plus pending edit/delete dialogs.
+ */
 export function MyLeavesContainer() {
   const {
     deleteLeaveRequest,

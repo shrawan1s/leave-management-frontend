@@ -13,6 +13,9 @@ import type {
   UpdateLeaveStatusPayload,
 } from "@/types";
 
+/**
+ * Creates a pending leave request for the authenticated employee.
+ */
 export async function createLeave(
   payload: CreateLeavePayload,
 ): Promise<ApiResponse<{ leaveRequest: LeaveRequest }>> {
@@ -23,6 +26,9 @@ export async function createLeave(
   return response.data;
 }
 
+/**
+ * Fetches the authenticated employee's paginated leave history.
+ */
 export async function getMyLeaves(
   query: LeaveListQuery = {},
 ): Promise<ApiResponse<PaginatedLeaveRequests>> {
@@ -36,6 +42,9 @@ export async function getMyLeaves(
   return response.data;
 }
 
+/**
+ * Fetches the authenticated employee's current shared leave balance.
+ */
 export async function getLeaveBalance(): Promise<
   ApiResponse<LeaveBalanceResponse>
 > {
@@ -46,19 +55,25 @@ export async function getLeaveBalance(): Promise<
   return response.data;
 }
 
+/**
+ * Fetches admin-visible paginated leave requests with optional filters.
+ */
 export async function getAllLeaveRequests(
   filters: LeaveFilters = {},
 ): Promise<ApiResponse<PaginatedLeaveRequests>> {
   const response = await apiClient.get<ApiResponse<PaginatedLeaveRequests>>(
     API_ENDPOINTS.LEAVE_ALL,
     {
-    params: filters,
+      params: filters,
     },
   );
 
   return response.data;
 }
 
+/**
+ * Fetches organization-level leave request counts for the admin dashboard.
+ */
 export async function getLeaveStats(): Promise<ApiResponse<LeaveStats>> {
   const response = await apiClient.get<ApiResponse<LeaveStats>>(
     API_ENDPOINTS.LEAVE_STATS,
@@ -67,6 +82,9 @@ export async function getLeaveStats(): Promise<ApiResponse<LeaveStats>> {
   return response.data;
 }
 
+/**
+ * Applies an admin approve/reject status transition to a pending leave request.
+ */
 export async function updateLeaveStatus(
   leaveRequestId: string,
   payload: UpdateLeaveStatusPayload,
@@ -78,6 +96,9 @@ export async function updateLeaveStatus(
   return response.data;
 }
 
+/**
+ * Updates an authenticated employee's own pending leave request.
+ */
 export async function updateLeaveRequest(
   leaveRequestId: string,
   payload: UpdateLeaveRequestPayload,
@@ -89,6 +110,9 @@ export async function updateLeaveRequest(
   return response.data;
 }
 
+/**
+ * Deletes an authenticated employee's own pending leave request.
+ */
 export async function deleteLeaveRequest(
   leaveRequestId: string,
 ): Promise<ApiResponse<null>> {

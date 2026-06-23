@@ -5,6 +5,9 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/constants/ui-text";
 
+/**
+ * Toggles the app between light and dark themes.
+ */
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const nextTheme = resolvedTheme === "dark" ? "light" : "dark";

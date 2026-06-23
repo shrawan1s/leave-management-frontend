@@ -13,6 +13,9 @@ import { UI_TEXT } from "@/constants/ui-text";
 import { formatDisplayDate } from "@/lib/date";
 import type { EmployeeLeaveTableProps } from "@/types";
 
+/**
+ * Employee leave history table with pending edit/delete actions.
+ */
 export function EmployeeLeaveTable({
   emptyMessage,
   leaveRequests,

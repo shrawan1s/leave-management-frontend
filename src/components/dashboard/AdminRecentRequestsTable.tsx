@@ -11,6 +11,9 @@ import { UI_TEXT } from "@/constants/ui-text";
 import { formatDisplayDate } from "@/lib/date";
 import type { AdminRecentRequestsTableProps } from "@/types";
 
+/**
+ * Read-only recent request table for the admin dashboard.
+ */
 export function AdminRecentRequestsTable({
   emptyMessage,
   isLoading,

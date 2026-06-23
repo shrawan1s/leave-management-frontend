@@ -11,6 +11,9 @@ import { UI_TEXT } from "@/constants/ui-text";
 import { formatDisplayDate } from "@/lib/date";
 import type { LeaveTableProps } from "@/types";
 
+/**
+ * Read-only leave request table used by the employee dashboard.
+ */
 export function LeaveTable({ emptyMessage, leaveRequests }: LeaveTableProps) {
   if (!leaveRequests.length) {
     return <p className="text-sm text-muted-foreground">{emptyMessage}</p>;

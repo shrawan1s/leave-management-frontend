@@ -28,6 +28,9 @@ import type {
 
 const leaveTypes: LeaveType[] = ["SICK", "CASUAL", "EARNED"];
 
+/**
+ * Employee pending leave edit dialog.
+ */
 export function EditLeaveRequestDialog({
   isOpen,
   isSubmitting,

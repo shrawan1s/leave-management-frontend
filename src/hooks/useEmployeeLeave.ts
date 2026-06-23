@@ -22,6 +22,9 @@ const defaultPagination: PaginatedLeaveRequests = {
   totalPages: 0,
 };
 
+/**
+ * Owns employee leave data, pagination, and pending-request mutations.
+ */
 export function useEmployeeLeave(initialQuery: LeaveListQuery = {}) {
   const router = useRouter();
   const [query, setQuery] = useState<LeaveListQuery>(() => ({

@@ -4,6 +4,9 @@ import type { PaginationControlsProps } from "@/types";
 
 const pageSizeOptions = [10, 20, 50];
 
+/**
+ * Shared server-pagination controls with page-size selection.
+ */
 export function PaginationControls({
   limit,
   onLimitChange,

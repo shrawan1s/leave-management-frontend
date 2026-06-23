@@ -6,6 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UI_TEXT } from "@/constants/ui-text";
 import { useAdminLeave } from "@/hooks/useAdminLeave";
 
+/**
+ * Admin dashboard with aggregate stats and the latest leave requests.
+ */
 export function AdminDashboard() {
   const { isLoading, leaveRequests, stats } = useAdminLeave({ limit: 10 });
   const value = (currentValue: number) => (isLoading ? "-" : currentValue);

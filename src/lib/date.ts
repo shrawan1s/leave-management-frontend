@@ -1,3 +1,6 @@
+/**
+ * Formats an API date value for table display.
+ */
 export function formatDisplayDate(value: string): string {
   return new Intl.DateTimeFormat("en-GB", {
     day: "2-digit",
@@ -6,6 +9,9 @@ export function formatDisplayDate(value: string): string {
   }).format(new Date(value));
 }
 
+/**
+ * Converts an API date value into the YYYY-MM-DD format required by date inputs.
+ */
 export function formatDateInputValue(value: string): string {
   const date = new Date(value);
 
@@ -16,6 +22,9 @@ export function formatDateInputValue(value: string): string {
   return date.toISOString().slice(0, 10);
 }
 
+/**
+ * Returns today's local date in YYYY-MM-DD format for date input minimums.
+ */
 export function getTodayInputValue(): string {
   const today = new Date();
   const timezoneOffset = today.getTimezoneOffset() * 60 * 1000;
@@ -23,6 +32,9 @@ export function getTodayInputValue(): string {
   return new Date(today.getTime() - timezoneOffset).toISOString().slice(0, 10);
 }
 
+/**
+ * Calculates inclusive calendar days between two date-input values.
+ */
 export function calculateInclusiveDays(startDate: string, endDate: string) {
   if (!startDate || !endDate) {
     return 0;

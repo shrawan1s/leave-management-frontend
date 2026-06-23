@@ -23,6 +23,9 @@ const initialValues: LeaveFormValues = {
 
 const leaveTypes: LeaveType[] = ["SICK", "CASUAL", "EARNED"];
 
+/**
+ * Employee leave creation form with date, balance, and reason validation.
+ */
 export function LeaveForm({
   isLoadingBalance,
   isSubmitting,

@@ -28,6 +28,9 @@ const defaultPagination: PaginatedLeaveRequests = {
   totalPages: 0,
 };
 
+/**
+ * Owns admin leave stats, filtered pagination, and approve/reject mutations.
+ */
 export function useAdminLeave(initialFilters: LeaveFilters = {}) {
   const [filters, setFilters] = useState<LeaveFilters>(() => ({
     page: initialFilters.page ?? 1,

@@ -24,6 +24,9 @@ const typeFilters: Array<LeaveType | undefined> = [
   "EARNED",
 ];
 
+/**
+ * Owns admin request filtering, pagination, view, and approve/reject dialogs.
+ */
 export function AdminRequestsContainer() {
   const {
     filters,

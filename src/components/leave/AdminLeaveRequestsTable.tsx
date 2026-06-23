@@ -13,6 +13,9 @@ import { UI_TEXT } from "@/constants/ui-text";
 import { formatDisplayDate } from "@/lib/date";
 import type { AdminLeaveRequestsTableProps } from "@/types";
 
+/**
+ * Admin request table with view and pending approve/reject actions.
+ */
 export function AdminLeaveRequestsTable({
   isLoading,
   leaveRequests,

@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UI_TEXT } from "@/constants/ui-text";
 import { useEmployeeLeave } from "@/hooks/useEmployeeLeave";
 
+/**
+ * Employee dashboard with balance and recent leave requests.
+ */
 export function EmployeeDashboard() {
   const { isLoading, leaveBalance, leaveRequests } = useEmployeeLeave({
     limit: 10,
