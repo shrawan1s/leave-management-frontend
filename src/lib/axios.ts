@@ -16,6 +16,19 @@ export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
+const PUBLIC_AUTH_ENDPOINTS = [
+  API_ENDPOINTS.AUTH_LOGIN,
+  API_ENDPOINTS.AUTH_REGISTER,
+] as const;
+
+function isPublicAuthEndpoint(url?: string): boolean {
+  if (!url) {
+    return false;
+  }
+
+  return PUBLIC_AUTH_ENDPOINTS.some((endpoint) => url.endsWith(endpoint));
+}
+
 apiClient.interceptors.request.use((config) => {
   if (typeof window === "undefined") {
     return config;
@@ -38,12 +51,14 @@ apiClient.interceptors.response.use(
       | undefined;
     const isRefreshRequest =
       originalRequest?.url === API_ENDPOINTS.AUTH_REFRESH;
+    const isPublicAuthRequest = isPublicAuthEndpoint(originalRequest?.url);
 
     if (
       error.response?.status === 401 &&
       originalRequest &&
       !originalRequest.hasRetried &&
       !isRefreshRequest &&
+      !isPublicAuthRequest &&
       typeof window !== "undefined"
     ) {
       const refreshToken = getRefreshToken();
@@ -87,7 +102,13 @@ apiClient.interceptors.response.use(
  */
 export function getApiErrorMessage(error: unknown): string {
   if (axios.isAxiosError<ApiResponse<unknown>>(error)) {
-    return error.response?.data.message ?? error.message;
+    const message = error.response?.data.message;
+
+    if (Array.isArray(message)) {
+      return message.join(", ");
+    }
+
+    return message ?? error.message;
   }
 
   return UI_TEXT.API.FALLBACK_ERROR;

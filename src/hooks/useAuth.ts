@@ -44,7 +44,6 @@ export function useAuth() {
         handleAuthSuccess(response.data.user, response.message);
       } catch (error) {
         toast.error(getApiErrorMessage(error));
-        throw error;
       } finally {
         setIsLoading(false);
       }
@@ -63,7 +62,6 @@ export function useAuth() {
         handleAuthSuccess(response.data.user, response.message);
       } catch (error) {
         toast.error(getApiErrorMessage(error));
-        throw error;
       } finally {
         setIsLoading(false);
       }
