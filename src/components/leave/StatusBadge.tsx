@@ -9,6 +9,9 @@ const statusClasses = {
   REJECTED: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
 };
 
+/**
+ * Displays leave status using the centralized status color mapping.
+ */
 export function StatusBadge({ status }: StatusBadgeProps) {
   return (
     <Badge className={cn("rounded-md", statusClasses[status])}>{status}</Badge>

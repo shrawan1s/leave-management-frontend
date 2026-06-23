@@ -1,5 +1,8 @@
 import type { PageHeaderProps } from "@/types";
 
+/**
+ * Standard page heading used inside protected route content.
+ */
 export function PageHeader({ title }: PageHeaderProps) {
   return (
     <header>

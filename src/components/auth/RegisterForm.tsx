@@ -24,6 +24,9 @@ const initialValues: RegisterFormValues = {
   joinDate: "",
 };
 
+/**
+ * Two-step employee registration form.
+ */
 export function RegisterForm() {
   const { isLoading, register } = useAuth();
   const [step, setStep] = useState(1);

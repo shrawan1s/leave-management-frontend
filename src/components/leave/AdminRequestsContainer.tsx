@@ -3,19 +3,13 @@
 import { useState } from "react";
 import { AdminLeaveRequestsTable } from "@/components/leave/AdminLeaveRequestsTable";
 import { ApproveRejectDialog } from "@/components/leave/ApproveRejectDialog";
-import { DeleteLeaveRequestDialog } from "@/components/leave/DeleteLeaveRequestDialog";
-import { EditLeaveRequestDialog } from "@/components/leave/EditLeaveRequestDialog";
 import { ViewLeaveRequestDialog } from "@/components/leave/ViewLeaveRequestDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PaginationControls } from "@/components/shared/PaginationControls";
 import { UI_TEXT } from "@/constants/ui-text";
 import { useAdminLeave } from "@/hooks/useAdminLeave";
-import type {
-  LeaveRequest,
-  LeaveStatus,
-  LeaveType,
-  UpdateLeaveRequestPayload,
-} from "@/types";
+import type { LeaveRequest, LeaveStatus, LeaveType } from "@/types";
 
 const statusFilters: Array<LeaveStatus | undefined> = [
   undefined,
@@ -30,29 +24,29 @@ const typeFilters: Array<LeaveType | undefined> = [
   "EARNED",
 ];
 
+/**
+ * Owns admin request filtering, pagination, view, and approve/reject dialogs.
+ */
 export function AdminRequestsContainer() {
   const {
     filters,
     isLoading,
     isSubmitting,
     leaveRequests,
-    deleteLeaveRequest,
+    pagination,
     updateFilters,
-    updateLeaveRequest,
+    updateLimit,
+    updatePage,
     updateStatus,
   } = useAdminLeave();
-  const [selectedStatusLeaveRequest, setSelectedStatusLeaveRequest] =
-    useState<LeaveRequest | null>(null);
   const [selectedViewLeaveRequest, setSelectedViewLeaveRequest] =
     useState<LeaveRequest | null>(null);
-  const [selectedEditLeaveRequest, setSelectedEditLeaveRequest] =
-    useState<LeaveRequest | null>(null);
-  const [selectedDeleteLeaveRequest, setSelectedDeleteLeaveRequest] =
+  const [selectedStatusLeaveRequest, setSelectedStatusLeaveRequest] =
     useState<LeaveRequest | null>(null);
   const [selectedStatus, setSelectedStatus] =
     useState<"APPROVED" | "REJECTED">("APPROVED");
 
-  function openActionDialog(
+  function openStatusDialog(
     leaveRequest: LeaveRequest,
     status: "APPROVED" | "REJECTED",
   ) {
@@ -72,24 +66,6 @@ export function AdminRequestsContainer() {
     setSelectedStatusLeaveRequest(null);
   }
 
-  async function confirmEdit(payload: UpdateLeaveRequestPayload) {
-    if (!selectedEditLeaveRequest) {
-      return;
-    }
-
-    await updateLeaveRequest(selectedEditLeaveRequest.id, payload);
-    setSelectedEditLeaveRequest(null);
-  }
-
-  async function confirmDelete() {
-    if (!selectedDeleteLeaveRequest) {
-      return;
-    }
-
-    await deleteLeaveRequest(selectedDeleteLeaveRequest.id);
-    setSelectedDeleteLeaveRequest(null);
-  }
-
   return (
     <>
       <Card className="rounded-lg">
@@ -105,7 +81,7 @@ export function AdminRequestsContainer() {
                   size="sm"
                   type="button"
                   variant={filters.status === status ? "default" : "outline"}
-                  onClick={() => updateFilters({ ...filters, status })}
+                  onClick={() => updateFilters({ status })}
                 >
                   {status ? UI_TEXT.ADMIN[status] : UI_TEXT.ADMIN.ALL}
                 </Button>
@@ -118,7 +94,7 @@ export function AdminRequestsContainer() {
                   size="sm"
                   type="button"
                   variant={filters.type === type ? "default" : "outline"}
-                  onClick={() => updateFilters({ ...filters, type })}
+                  onClick={() => updateFilters({ type })}
                 >
                   {type ? UI_TEXT.LEAVE[type] : UI_TEXT.ADMIN.ALL}
                 </Button>
@@ -128,38 +104,30 @@ export function AdminRequestsContainer() {
           <AdminLeaveRequestsTable
             isLoading={isLoading}
             leaveRequests={leaveRequests}
-            onDelete={setSelectedDeleteLeaveRequest}
-            onEdit={setSelectedEditLeaveRequest}
-            onStatusAction={openActionDialog}
+            onStatusAction={openStatusDialog}
             onView={setSelectedViewLeaveRequest}
+          />
+          <PaginationControls
+            limit={pagination.limit}
+            page={pagination.page}
+            total={pagination.total}
+            totalPages={pagination.totalPages}
+            onLimitChange={updateLimit}
+            onPageChange={updatePage}
           />
         </CardContent>
       </Card>
+      <ViewLeaveRequestDialog
+        isOpen={Boolean(selectedViewLeaveRequest)}
+        leaveRequest={selectedViewLeaveRequest}
+        onClose={() => setSelectedViewLeaveRequest(null)}
+      />
       <ApproveRejectDialog
         isOpen={Boolean(selectedStatusLeaveRequest)}
         isSubmitting={isSubmitting}
         status={selectedStatus}
         onClose={() => setSelectedStatusLeaveRequest(null)}
         onConfirm={confirmStatusUpdate}
-      />
-      <ViewLeaveRequestDialog
-        isOpen={Boolean(selectedViewLeaveRequest)}
-        leaveRequest={selectedViewLeaveRequest}
-        onClose={() => setSelectedViewLeaveRequest(null)}
-      />
-      <EditLeaveRequestDialog
-        isOpen={Boolean(selectedEditLeaveRequest)}
-        isSubmitting={isSubmitting}
-        leaveRequest={selectedEditLeaveRequest}
-        onClose={() => setSelectedEditLeaveRequest(null)}
-        onConfirm={confirmEdit}
-      />
-      <DeleteLeaveRequestDialog
-        isOpen={Boolean(selectedDeleteLeaveRequest)}
-        isSubmitting={isSubmitting}
-        leaveRequest={selectedDeleteLeaveRequest}
-        onClose={() => setSelectedDeleteLeaveRequest(null)}
-        onConfirm={confirmDelete}
       />
     </>
   );

@@ -13,6 +13,9 @@ import {
 import { UI_TEXT } from "@/constants/ui-text";
 import type { DeleteLeaveRequestDialogProps } from "@/types";
 
+/**
+ * Employee pending leave deletion confirmation dialog.
+ */
 export function DeleteLeaveRequestDialog({
   isOpen,
   isSubmitting,

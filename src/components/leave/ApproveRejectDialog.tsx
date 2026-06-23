@@ -15,6 +15,9 @@ import { Label } from "@/components/ui/label";
 import { UI_TEXT } from "@/constants/ui-text";
 import type { ApproveRejectDialogProps } from "@/types";
 
+/**
+ * Admin status confirmation dialog with optional reviewer comment.
+ */
 export function ApproveRejectDialog({
   isOpen,
   isSubmitting,

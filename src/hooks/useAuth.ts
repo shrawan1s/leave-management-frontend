@@ -15,6 +15,9 @@ import {
 } from "@/lib/auth";
 import type { LoginPayload, RegisterPayload, User } from "@/types";
 
+/**
+ * Owns auth mutations, local auth session state, and post-auth redirects.
+ */
 export function useAuth() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(() => getUser());

@@ -57,6 +57,9 @@ const adminNavItems: DashboardNavItem[] = [
   },
 ];
 
+/**
+ * Role-aware protected shell with sidebar navigation and logout confirmation.
+ */
 export function DashboardShell({ children, role }: DashboardShellProps) {
   const pathname = usePathname();
   const { logout } = useAuth();
