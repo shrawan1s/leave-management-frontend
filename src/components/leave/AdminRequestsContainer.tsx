@@ -3,19 +3,12 @@
 import { useState } from "react";
 import { AdminLeaveRequestsTable } from "@/components/leave/AdminLeaveRequestsTable";
 import { ApproveRejectDialog } from "@/components/leave/ApproveRejectDialog";
-import { DeleteLeaveRequestDialog } from "@/components/leave/DeleteLeaveRequestDialog";
-import { EditLeaveRequestDialog } from "@/components/leave/EditLeaveRequestDialog";
 import { ViewLeaveRequestDialog } from "@/components/leave/ViewLeaveRequestDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UI_TEXT } from "@/constants/ui-text";
 import { useAdminLeave } from "@/hooks/useAdminLeave";
-import type {
-  LeaveRequest,
-  LeaveStatus,
-  LeaveType,
-  UpdateLeaveRequestPayload,
-} from "@/types";
+import type { LeaveRequest, LeaveStatus, LeaveType } from "@/types";
 
 const statusFilters: Array<LeaveStatus | undefined> = [
   undefined,
@@ -36,23 +29,17 @@ export function AdminRequestsContainer() {
     isLoading,
     isSubmitting,
     leaveRequests,
-    deleteLeaveRequest,
     updateFilters,
-    updateLeaveRequest,
     updateStatus,
   } = useAdminLeave();
-  const [selectedStatusLeaveRequest, setSelectedStatusLeaveRequest] =
-    useState<LeaveRequest | null>(null);
   const [selectedViewLeaveRequest, setSelectedViewLeaveRequest] =
     useState<LeaveRequest | null>(null);
-  const [selectedEditLeaveRequest, setSelectedEditLeaveRequest] =
-    useState<LeaveRequest | null>(null);
-  const [selectedDeleteLeaveRequest, setSelectedDeleteLeaveRequest] =
+  const [selectedStatusLeaveRequest, setSelectedStatusLeaveRequest] =
     useState<LeaveRequest | null>(null);
   const [selectedStatus, setSelectedStatus] =
     useState<"APPROVED" | "REJECTED">("APPROVED");
 
-  function openActionDialog(
+  function openStatusDialog(
     leaveRequest: LeaveRequest,
     status: "APPROVED" | "REJECTED",
   ) {
@@ -70,24 +57,6 @@ export function AdminRequestsContainer() {
       adminComment,
     });
     setSelectedStatusLeaveRequest(null);
-  }
-
-  async function confirmEdit(payload: UpdateLeaveRequestPayload) {
-    if (!selectedEditLeaveRequest) {
-      return;
-    }
-
-    await updateLeaveRequest(selectedEditLeaveRequest.id, payload);
-    setSelectedEditLeaveRequest(null);
-  }
-
-  async function confirmDelete() {
-    if (!selectedDeleteLeaveRequest) {
-      return;
-    }
-
-    await deleteLeaveRequest(selectedDeleteLeaveRequest.id);
-    setSelectedDeleteLeaveRequest(null);
   }
 
   return (
@@ -128,38 +97,22 @@ export function AdminRequestsContainer() {
           <AdminLeaveRequestsTable
             isLoading={isLoading}
             leaveRequests={leaveRequests}
-            onDelete={setSelectedDeleteLeaveRequest}
-            onEdit={setSelectedEditLeaveRequest}
-            onStatusAction={openActionDialog}
+            onStatusAction={openStatusDialog}
             onView={setSelectedViewLeaveRequest}
           />
         </CardContent>
       </Card>
+      <ViewLeaveRequestDialog
+        isOpen={Boolean(selectedViewLeaveRequest)}
+        leaveRequest={selectedViewLeaveRequest}
+        onClose={() => setSelectedViewLeaveRequest(null)}
+      />
       <ApproveRejectDialog
         isOpen={Boolean(selectedStatusLeaveRequest)}
         isSubmitting={isSubmitting}
         status={selectedStatus}
         onClose={() => setSelectedStatusLeaveRequest(null)}
         onConfirm={confirmStatusUpdate}
-      />
-      <ViewLeaveRequestDialog
-        isOpen={Boolean(selectedViewLeaveRequest)}
-        leaveRequest={selectedViewLeaveRequest}
-        onClose={() => setSelectedViewLeaveRequest(null)}
-      />
-      <EditLeaveRequestDialog
-        isOpen={Boolean(selectedEditLeaveRequest)}
-        isSubmitting={isSubmitting}
-        leaveRequest={selectedEditLeaveRequest}
-        onClose={() => setSelectedEditLeaveRequest(null)}
-        onConfirm={confirmEdit}
-      />
-      <DeleteLeaveRequestDialog
-        isOpen={Boolean(selectedDeleteLeaveRequest)}
-        isSubmitting={isSubmitting}
-        leaveRequest={selectedDeleteLeaveRequest}
-        onClose={() => setSelectedDeleteLeaveRequest(null)}
-        onConfirm={confirmDelete}
       />
     </>
   );

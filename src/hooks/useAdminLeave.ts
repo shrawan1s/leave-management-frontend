@@ -8,7 +8,6 @@ import type {
   LeaveFilters,
   LeaveRequest,
   LeaveStats,
-  UpdateLeaveRequestPayload,
   UpdateLeaveStatusPayload,
 } from "@/types";
 
@@ -105,56 +104,13 @@ export function useAdminLeave() {
     [filters, loadAdminLeave],
   );
 
-  const updateLeaveRequest = useCallback(
-    async (leaveRequestId: string, payload: UpdateLeaveRequestPayload) => {
-      setIsSubmitting(true);
-
-      try {
-        const response = await leaveApi.updateLeaveRequest(
-          leaveRequestId,
-          payload,
-        );
-
-        toast.success(response.message);
-        await loadAdminLeave(filters);
-      } catch (error) {
-        toast.error(getApiErrorMessage(error));
-        throw error;
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [filters, loadAdminLeave],
-  );
-
-  const deleteLeaveRequest = useCallback(
-    async (leaveRequestId: string) => {
-      setIsSubmitting(true);
-
-      try {
-        const response = await leaveApi.deleteLeaveRequest(leaveRequestId);
-
-        toast.success(response.message);
-        await loadAdminLeave(filters);
-      } catch (error) {
-        toast.error(getApiErrorMessage(error));
-        throw error;
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [filters, loadAdminLeave],
-  );
-
   return {
     filters,
     isLoading,
     isSubmitting,
     leaveRequests,
     stats,
-    deleteLeaveRequest,
     updateFilters,
-    updateLeaveRequest,
     updateStatus,
   };
 }

@@ -88,8 +88,8 @@
 - Employee leave pages must use hooks/containers, not direct API calls in page files
 - Admin leave API calls must go through `lib/api/leave.ts`
 - Admin leave pages must use hooks/containers, not direct API calls in page files
-- Admin approve/reject actions must only be shown for `PENDING` requests
-- Admin request rows must expose view, edit, and delete actions through centralized dialogs
+- Admin request rows must expose view for every request and approve/reject only for `PENDING` requests
+- Employee request rows must expose view actions for all requests and edit/delete actions only for `PENDING` requests
 - Leave tables must remain scroll-safe on narrow screens instead of forcing columns to shrink or overlap
 
 ## Date Rules

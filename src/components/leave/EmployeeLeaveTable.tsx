@@ -1,6 +1,6 @@
+import { EyeIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { StatusBadge } from "@/components/leave/StatusBadge";
 import { Button } from "@/components/ui/button";
-import { CheckIcon, EyeIcon, XIcon } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -11,28 +11,17 @@ import {
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/constants/ui-text";
 import { formatDisplayDate } from "@/lib/date";
-import type { AdminLeaveRequestsTableProps } from "@/types";
+import type { EmployeeLeaveTableProps } from "@/types";
 
-export function AdminLeaveRequestsTable({
-  isLoading,
+export function EmployeeLeaveTable({
+  emptyMessage,
   leaveRequests,
-  onStatusAction,
+  onDelete,
+  onEdit,
   onView,
-}: AdminLeaveRequestsTableProps) {
-  if (isLoading) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        {UI_TEXT.LEAVE.LOADING_REQUESTS}
-      </p>
-    );
-  }
-
+}: EmployeeLeaveTableProps) {
   if (!leaveRequests.length) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        {UI_TEXT.LEAVE.EMPTY_TABLE}
-      </p>
-    );
+    return <p className="text-sm text-muted-foreground">{emptyMessage}</p>;
   }
 
   return (
@@ -40,30 +29,18 @@ export function AdminLeaveRequestsTable({
       <Table className="min-w-[900px]">
         <TableHeader>
           <TableRow>
-            <TableHead>{UI_TEXT.ADMIN.EMPLOYEE}</TableHead>
             <TableHead>{UI_TEXT.LEAVE.TABLE_TYPE}</TableHead>
             <TableHead>{UI_TEXT.LEAVE.TABLE_START_DATE}</TableHead>
             <TableHead>{UI_TEXT.LEAVE.TABLE_END_DATE}</TableHead>
             <TableHead>{UI_TEXT.LEAVE.TABLE_DAYS}</TableHead>
             <TableHead>{UI_TEXT.LEAVE.TABLE_STATUS}</TableHead>
+            <TableHead>{UI_TEXT.LEAVE.TABLE_REASON}</TableHead>
             <TableHead>{UI_TEXT.ADMIN.ACTIONS}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {leaveRequests.map((leaveRequest) => (
             <TableRow key={leaveRequest.id}>
-              <TableCell>
-                <div className="grid gap-1">
-                  <span>
-                    {leaveRequest.employee?.name ?? leaveRequest.employeeId}
-                  </span>
-                  {leaveRequest.employee ? (
-                    <span className="text-xs text-muted-foreground">
-                      {leaveRequest.employee.department}
-                    </span>
-                  ) : null}
-                </div>
-              </TableCell>
               <TableCell>{UI_TEXT.LEAVE[leaveRequest.type]}</TableCell>
               <TableCell>{formatDisplayDate(leaveRequest.startDate)}</TableCell>
               <TableCell>{formatDisplayDate(leaveRequest.endDate)}</TableCell>
@@ -71,10 +48,12 @@ export function AdminLeaveRequestsTable({
               <TableCell>
                 <StatusBadge status={leaveRequest.status} />
               </TableCell>
+              <TableCell className="max-w-xs whitespace-normal">
+                {leaveRequest.reason}
+              </TableCell>
               <TableCell>
                 <div className="flex flex-wrap gap-2">
                   <Button
-                    aria-label={UI_TEXT.ADMIN.VIEW}
                     size="sm"
                     type="button"
                     variant="outline"
@@ -88,19 +67,20 @@ export function AdminLeaveRequestsTable({
                       <Button
                         size="sm"
                         type="button"
-                        onClick={() => onStatusAction(leaveRequest, "APPROVED")}
+                        variant="outline"
+                        onClick={() => onEdit(leaveRequest)}
                       >
-                        <CheckIcon className="size-4" />
-                        {UI_TEXT.LEAVE.APPROVE}
+                        <PencilIcon className="size-4" />
+                        {UI_TEXT.ADMIN.EDIT}
                       </Button>
                       <Button
                         size="sm"
                         type="button"
                         variant="outline"
-                        onClick={() => onStatusAction(leaveRequest, "REJECTED")}
+                        onClick={() => onDelete(leaveRequest)}
                       >
-                        <XIcon className="size-4" />
-                        {UI_TEXT.LEAVE.REJECT}
+                        <Trash2Icon className="size-4" />
+                        {UI_TEXT.ADMIN.DELETE}
                       </Button>
                     </>
                   ) : null}

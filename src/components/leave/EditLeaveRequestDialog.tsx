@@ -64,7 +64,6 @@ function EditLeaveRequestForm({
     startDate: formatDateInputValue(leaveRequest.startDate),
     endDate: formatDateInputValue(leaveRequest.endDate),
     reason: leaveRequest.reason,
-    adminComment: leaveRequest.adminComment ?? "",
   }));
   const [errors, setErrors] = useState<LeaveFormErrors>({});
   const requestedDays = useMemo(
@@ -109,7 +108,6 @@ function EditLeaveRequestForm({
     await onConfirm({
       ...values,
       reason: values.reason.trim(),
-      adminComment: values.adminComment?.trim() || undefined,
     });
   }
 
@@ -174,17 +172,6 @@ function EditLeaveRequestForm({
         {errors.reason ? (
           <p className="text-sm text-destructive">{errors.reason}</p>
         ) : null}
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="editAdminComment">{UI_TEXT.LEAVE.ADMIN_COMMENT}</Label>
-        <Input
-          id="editAdminComment"
-          placeholder={UI_TEXT.LEAVE.ADMIN_COMMENT_PLACEHOLDER}
-          value={values.adminComment}
-          onChange={(event) =>
-            updateValue("adminComment", event.target.value)
-          }
-        />
       </div>
       <DialogFooter>
         <Button disabled={isSubmitting} type="submit">

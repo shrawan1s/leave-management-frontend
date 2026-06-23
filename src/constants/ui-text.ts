@@ -78,7 +78,7 @@ export const UI_TEXT = {
     CASUAL: "Casual",
     DASHBOARD_RECENT_TITLE: "Recent requests",
     DELETE_DESCRIPTION:
-      "This action cannot be undone. Approved leave days will be restored to the employee balance.",
+      "This action cannot be undone. Only pending requests can be deleted.",
     DELETE_REQUEST: "Delete request",
     DELETE_REQUEST_CONFIRM: "Delete",
     EDIT_REQUEST: "Edit request",

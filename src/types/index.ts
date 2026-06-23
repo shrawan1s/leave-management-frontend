@@ -173,7 +173,6 @@ export interface UpdateLeaveRequestPayload {
   startDate: string;
   endDate: string;
   reason: string;
-  adminComment?: string;
 }
 
 export interface AdminLeaveRequestsTableProps {
@@ -183,8 +182,6 @@ export interface AdminLeaveRequestsTableProps {
     leaveRequest: LeaveRequest,
     status: "APPROVED" | "REJECTED",
   ) => void;
-  onDelete: (leaveRequest: LeaveRequest) => void;
-  onEdit: (leaveRequest: LeaveRequest) => void;
   onView: (leaveRequest: LeaveRequest) => void;
 }
 
@@ -208,6 +205,14 @@ export interface EditLeaveRequestDialogProps {
   leaveRequest: LeaveRequest | null;
   onClose: () => void;
   onConfirm: (payload: UpdateLeaveRequestPayload) => Promise<void>;
+}
+
+export interface EmployeeLeaveTableProps {
+  emptyMessage: string;
+  leaveRequests: LeaveRequest[];
+  onDelete: (leaveRequest: LeaveRequest) => void;
+  onEdit: (leaveRequest: LeaveRequest) => void;
+  onView: (leaveRequest: LeaveRequest) => void;
 }
 
 export interface DeleteLeaveRequestDialogProps {

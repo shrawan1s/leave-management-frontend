@@ -6,7 +6,11 @@ import { toast } from "sonner";
 import { ROUTES } from "@/constants/routes";
 import * as leaveApi from "@/lib/api/leave";
 import { getApiErrorMessage } from "@/lib/axios";
-import type { CreateLeavePayload, LeaveRequest } from "@/types";
+import type {
+  CreateLeavePayload,
+  LeaveRequest,
+  UpdateLeaveRequestPayload,
+} from "@/types";
 
 export function useEmployeeLeave() {
   const router = useRouter();
@@ -92,13 +96,56 @@ export function useEmployeeLeave() {
     [router],
   );
 
+  const updateLeaveRequest = useCallback(
+    async (leaveRequestId: string, payload: UpdateLeaveRequestPayload) => {
+      setIsSubmitting(true);
+
+      try {
+        const response = await leaveApi.updateLeaveRequest(
+          leaveRequestId,
+          payload,
+        );
+
+        toast.success(response.message);
+        await loadEmployeeLeave();
+      } catch (error) {
+        toast.error(getApiErrorMessage(error));
+        throw error;
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [loadEmployeeLeave],
+  );
+
+  const deleteLeaveRequest = useCallback(
+    async (leaveRequestId: string) => {
+      setIsSubmitting(true);
+
+      try {
+        const response = await leaveApi.deleteLeaveRequest(leaveRequestId);
+
+        toast.success(response.message);
+        await loadEmployeeLeave();
+      } catch (error) {
+        toast.error(getApiErrorMessage(error));
+        throw error;
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [loadEmployeeLeave],
+  );
+
   return {
     createLeave,
+    deleteLeaveRequest,
     isLoading,
     isSubmitting,
     leaveBalance,
     leaveRequests,
     recentLeaveRequests,
     reload: loadEmployeeLeave,
+    updateLeaveRequest,
   };
 }

@@ -34,6 +34,7 @@ Always read these before generating any code:
 - Keep theme controls in shared components and wrap the app with `ThemeProvider`
 - Keep protected employee/admin page switching inside the shared `DashboardShell`
 - Keep employee leave UI in `components/leave/` and API calls in `lib/api/leave.ts`
+- Keep employee edit/delete actions on pending employee requests, not admin request rows
 - Keep admin leave dashboard/request UI in `components/dashboard/` and `components/leave/`, with API calls in `lib/api/leave.ts`
 - If something is unclear, implement the most reasonable interpretation and add a comment
 - Write code that is immediately runnable — no placeholders like `// TODO implement this`
