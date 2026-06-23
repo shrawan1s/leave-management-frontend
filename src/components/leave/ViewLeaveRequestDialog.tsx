@@ -11,6 +11,9 @@ import { UI_TEXT } from "@/constants/ui-text";
 import { formatDisplayDate } from "@/lib/date";
 import type { ViewLeaveRequestDialogProps } from "@/types";
 
+/**
+ * Read-only leave request detail dialog.
+ */
 export function ViewLeaveRequestDialog({
   isOpen,
   leaveRequest,

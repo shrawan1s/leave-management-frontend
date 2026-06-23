@@ -13,7 +13,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UI_TEXT } from "@/constants/ui-text";
-import { calculateInclusiveDays, formatDateInputValue } from "@/lib/date";
+import {
+  calculateInclusiveDays,
+  formatDateInputValue,
+  getTodayInputValue,
+} from "@/lib/date";
 import type {
   EditLeaveRequestDialogProps,
   LeaveRequest,
@@ -24,6 +28,9 @@ import type {
 
 const leaveTypes: LeaveType[] = ["SICK", "CASUAL", "EARNED"];
 
+/**
+ * Employee pending leave edit dialog.
+ */
 export function EditLeaveRequestDialog({
   isOpen,
   isSubmitting,
@@ -64,9 +71,9 @@ function EditLeaveRequestForm({
     startDate: formatDateInputValue(leaveRequest.startDate),
     endDate: formatDateInputValue(leaveRequest.endDate),
     reason: leaveRequest.reason,
-    adminComment: leaveRequest.adminComment ?? "",
   }));
   const [errors, setErrors] = useState<LeaveFormErrors>({});
+  const todayInputValue = useMemo(() => getTodayInputValue(), []);
   const requestedDays = useMemo(
     () => calculateInclusiveDays(values.startDate, values.endDate),
     [values.endDate, values.startDate],
@@ -81,10 +88,14 @@ function EditLeaveRequestForm({
 
     if (!values.startDate) {
       nextErrors.startDate = UI_TEXT.VALIDATION.START_DATE_REQUIRED;
+    } else if (values.startDate < todayInputValue) {
+      nextErrors.startDate = UI_TEXT.VALIDATION.PAST_DATE_NOT_ALLOWED;
     }
 
     if (!values.endDate) {
       nextErrors.endDate = UI_TEXT.VALIDATION.END_DATE_REQUIRED;
+    } else if (values.endDate < todayInputValue) {
+      nextErrors.endDate = UI_TEXT.VALIDATION.PAST_DATE_NOT_ALLOWED;
     }
 
     if (values.startDate && values.endDate && requestedDays < 1) {
@@ -109,7 +120,6 @@ function EditLeaveRequestForm({
     await onConfirm({
       ...values,
       reason: values.reason.trim(),
-      adminComment: values.adminComment?.trim() || undefined,
     });
   }
 
@@ -135,6 +145,7 @@ function EditLeaveRequestForm({
           <Label htmlFor="editStartDate">{UI_TEXT.LEAVE.START_DATE}</Label>
           <Input
             id="editStartDate"
+            min={todayInputValue}
             type="date"
             value={values.startDate}
             aria-invalid={Boolean(errors.startDate)}
@@ -150,6 +161,7 @@ function EditLeaveRequestForm({
           <Label htmlFor="editEndDate">{UI_TEXT.LEAVE.END_DATE}</Label>
           <Input
             id="editEndDate"
+            min={values.startDate || todayInputValue}
             type="date"
             value={values.endDate}
             aria-invalid={Boolean(errors.endDate)}
@@ -174,17 +186,6 @@ function EditLeaveRequestForm({
         {errors.reason ? (
           <p className="text-sm text-destructive">{errors.reason}</p>
         ) : null}
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="editAdminComment">{UI_TEXT.LEAVE.ADMIN_COMMENT}</Label>
-        <Input
-          id="editAdminComment"
-          placeholder={UI_TEXT.LEAVE.ADMIN_COMMENT_PLACEHOLDER}
-          value={values.adminComment}
-          onChange={(event) =>
-            updateValue("adminComment", event.target.value)
-          }
-        />
       </div>
       <DialogFooter>
         <Button disabled={isSubmitting} type="submit">

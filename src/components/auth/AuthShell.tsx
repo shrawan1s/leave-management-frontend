@@ -3,6 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import type { AuthShellProps } from "@/types";
 
+/**
+ * Public auth page shell shared by login and registration.
+ */
 export function AuthShell({
   children,
   footerHref,

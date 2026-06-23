@@ -10,6 +10,9 @@ function getDashboardPath(role: UserRole): string {
   return role === "ADMIN" ? "/admin/dashboard" : "/dashboard";
 }
 
+/**
+ * Protects role-specific routes using auth cookies mirrored from localStorage.
+ */
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get(AUTH_TOKEN_COOKIE)?.value;

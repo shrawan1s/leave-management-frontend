@@ -8,6 +8,9 @@ import type {
   User,
 } from "@/types";
 
+/**
+ * Authenticates an existing user and returns a token pair.
+ */
 export async function login(
   payload: LoginPayload,
 ): Promise<ApiResponse<AuthResponse>> {
@@ -19,6 +22,9 @@ export async function login(
   return response.data;
 }
 
+/**
+ * Registers a new employee account and returns a token pair.
+ */
 export async function register(
   payload: RegisterPayload,
 ): Promise<ApiResponse<AuthResponse>> {
@@ -30,6 +36,9 @@ export async function register(
   return response.data;
 }
 
+/**
+ * Fetches the current user profile from the access token.
+ */
 export async function getMe(): Promise<ApiResponse<{ user: User }>> {
   const response =
     await apiClient.get<ApiResponse<{ user: User }>>(API_ENDPOINTS.AUTH_ME);
@@ -37,6 +46,9 @@ export async function getMe(): Promise<ApiResponse<{ user: User }>> {
   return response.data;
 }
 
+/**
+ * Rotates an expired access token using the refresh token.
+ */
 export async function refreshToken(
   refreshToken: string,
 ): Promise<ApiResponse<AuthResponse>> {
@@ -53,6 +65,9 @@ export async function refreshToken(
   return response.data;
 }
 
+/**
+ * Invalidates the current access-token session on the backend.
+ */
 export async function logout(): Promise<ApiResponse<null>> {
   const response = await apiClient.post<ApiResponse<null>>(
     API_ENDPOINTS.AUTH_LOGOUT,

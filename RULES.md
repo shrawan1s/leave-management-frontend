@@ -81,14 +81,20 @@
 ## Form Rules
 - ALWAYS validate on the frontend before submitting
 - For leave form: validate `endDate >= startDate` and `days <= leaveBalance` before API call
+- Leave create/edit forms must disable past dates and set end-date minimum to the selected start date
+- Never validate leave balance against a fake `0` while balance is still loading
 - Show field-level error messages, not just toast errors
 - Disable submit button while request is in flight
 - Employee leave API calls must go through `lib/api/leave.ts`
 - Employee leave pages must use hooks/containers, not direct API calls in page files
 - Admin leave API calls must go through `lib/api/leave.ts`
 - Admin leave pages must use hooks/containers, not direct API calls in page files
-- Admin approve/reject actions must only be shown for `PENDING` requests
-- Admin request rows must expose view, edit, and delete actions through centralized dialogs
+- Admin dashboard must show both stats and recent leave requests with employee identity
+- Dashboards must fetch only recent leave requests with `limit: 10`
+- Full leave request pages must use server pagination instead of fetching all records
+- Pagination controls must expose page navigation and page-size choices
+- Admin request rows must expose view for every request and approve/reject only for `PENDING` requests
+- Employee request rows must expose view actions for all requests and edit/delete actions only for `PENDING` requests
 - Leave tables must remain scroll-safe on narrow screens instead of forcing columns to shrink or overlap
 
 ## Date Rules

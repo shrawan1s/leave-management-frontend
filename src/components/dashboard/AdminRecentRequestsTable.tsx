@@ -1,6 +1,4 @@
 import { StatusBadge } from "@/components/leave/StatusBadge";
-import { Button } from "@/components/ui/button";
-import { CheckIcon, EyeIcon, XIcon } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -11,17 +9,16 @@ import {
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/constants/ui-text";
 import { formatDisplayDate } from "@/lib/date";
-import type { AdminLeaveRequestsTableProps } from "@/types";
+import type { AdminRecentRequestsTableProps } from "@/types";
 
 /**
- * Admin request table with view and pending approve/reject actions.
+ * Read-only recent request table for the admin dashboard.
  */
-export function AdminLeaveRequestsTable({
+export function AdminRecentRequestsTable({
+  emptyMessage,
   isLoading,
   leaveRequests,
-  onStatusAction,
-  onView,
-}: AdminLeaveRequestsTableProps) {
+}: AdminRecentRequestsTableProps) {
   if (isLoading) {
     return (
       <p className="text-sm text-muted-foreground">
@@ -31,16 +28,12 @@ export function AdminLeaveRequestsTable({
   }
 
   if (!leaveRequests.length) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        {UI_TEXT.LEAVE.EMPTY_TABLE}
-      </p>
-    );
+    return <p className="text-sm text-muted-foreground">{emptyMessage}</p>;
   }
 
   return (
     <div className="w-full overflow-x-auto">
-      <Table className="min-w-[900px]">
+      <Table className="min-w-[840px]">
         <TableHeader>
           <TableRow>
             <TableHead>{UI_TEXT.ADMIN.EMPLOYEE}</TableHead>
@@ -49,7 +42,6 @@ export function AdminLeaveRequestsTable({
             <TableHead>{UI_TEXT.LEAVE.TABLE_END_DATE}</TableHead>
             <TableHead>{UI_TEXT.LEAVE.TABLE_DAYS}</TableHead>
             <TableHead>{UI_TEXT.LEAVE.TABLE_STATUS}</TableHead>
-            <TableHead>{UI_TEXT.ADMIN.ACTIONS}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -73,41 +65,6 @@ export function AdminLeaveRequestsTable({
               <TableCell>{leaveRequest.days}</TableCell>
               <TableCell>
                 <StatusBadge status={leaveRequest.status} />
-              </TableCell>
-              <TableCell>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    aria-label={UI_TEXT.ADMIN.VIEW}
-                    size="sm"
-                    type="button"
-                    variant="outline"
-                    onClick={() => onView(leaveRequest)}
-                  >
-                    <EyeIcon className="size-4" />
-                    {UI_TEXT.ADMIN.VIEW}
-                  </Button>
-                  {leaveRequest.status === "PENDING" ? (
-                    <>
-                      <Button
-                        size="sm"
-                        type="button"
-                        onClick={() => onStatusAction(leaveRequest, "APPROVED")}
-                      >
-                        <CheckIcon className="size-4" />
-                        {UI_TEXT.LEAVE.APPROVE}
-                      </Button>
-                      <Button
-                        size="sm"
-                        type="button"
-                        variant="outline"
-                        onClick={() => onStatusAction(leaveRequest, "REJECTED")}
-                      >
-                        <XIcon className="size-4" />
-                        {UI_TEXT.LEAVE.REJECT}
-                      </Button>
-                    </>
-                  ) : null}
-                </div>
               </TableCell>
             </TableRow>
           ))}

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UI_TEXT } from "@/constants/ui-text";
-import { calculateInclusiveDays } from "@/lib/date";
+import { calculateInclusiveDays, getTodayInputValue } from "@/lib/date";
 import type {
   LeaveFormErrors,
   LeaveFormProps,
@@ -23,13 +23,18 @@ const initialValues: LeaveFormValues = {
 
 const leaveTypes: LeaveType[] = ["SICK", "CASUAL", "EARNED"];
 
+/**
+ * Employee leave creation form with date, balance, and reason validation.
+ */
 export function LeaveForm({
+  isLoadingBalance,
   isSubmitting,
   leaveBalance,
   onSubmit,
 }: LeaveFormProps) {
   const [values, setValues] = useState<LeaveFormValues>(initialValues);
   const [errors, setErrors] = useState<LeaveFormErrors>({});
+  const todayInputValue = useMemo(() => getTodayInputValue(), []);
   const requestedDays = useMemo(
     () => calculateInclusiveDays(values.startDate, values.endDate),
     [values.endDate, values.startDate],
@@ -48,17 +53,21 @@ export function LeaveForm({
 
     if (!values.startDate) {
       nextErrors.startDate = UI_TEXT.VALIDATION.START_DATE_REQUIRED;
+    } else if (values.startDate < todayInputValue) {
+      nextErrors.startDate = UI_TEXT.VALIDATION.PAST_DATE_NOT_ALLOWED;
     }
 
     if (!values.endDate) {
       nextErrors.endDate = UI_TEXT.VALIDATION.END_DATE_REQUIRED;
+    } else if (values.endDate < todayInputValue) {
+      nextErrors.endDate = UI_TEXT.VALIDATION.PAST_DATE_NOT_ALLOWED;
     }
 
     if (values.startDate && values.endDate && requestedDays < 1) {
       nextErrors.endDate = UI_TEXT.VALIDATION.END_DATE_BEFORE_START_DATE;
     }
 
-    if (requestedDays > leaveBalance) {
+    if (!isLoadingBalance && requestedDays > leaveBalance) {
       nextErrors.endDate = UI_TEXT.VALIDATION.INSUFFICIENT_BALANCE;
     }
 
@@ -73,7 +82,7 @@ export function LeaveForm({
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!validate()) {
+    if (isLoadingBalance || !validate()) {
       return;
     }
 
@@ -105,6 +114,7 @@ export function LeaveForm({
           <Label htmlFor="startDate">{UI_TEXT.LEAVE.START_DATE}</Label>
           <Input
             id="startDate"
+            min={todayInputValue}
             type="date"
             value={values.startDate}
             onChange={(event) => updateValue("startDate", event.target.value)}
@@ -118,6 +128,7 @@ export function LeaveForm({
           <Label htmlFor="endDate">{UI_TEXT.LEAVE.END_DATE}</Label>
           <Input
             id="endDate"
+            min={values.startDate || todayInputValue}
             type="date"
             value={values.endDate}
             onChange={(event) => updateValue("endDate", event.target.value)}
@@ -129,7 +140,14 @@ export function LeaveForm({
         </div>
       </div>
       <div className="rounded-md border bg-muted/40 p-3 text-sm">
-        {UI_TEXT.LEAVE.TOTAL_DAYS}: {Math.max(requestedDays, 0)}
+        <div>
+          {UI_TEXT.LEAVE.TOTAL_DAYS}: {Math.max(requestedDays, 0)}
+        </div>
+        <div className="text-muted-foreground">
+          {isLoadingBalance
+            ? UI_TEXT.LEAVE.LOADING_BALANCE
+            : `${UI_TEXT.LEAVE.BALANCE_CARD_TITLE}: ${leaveBalance}`}
+        </div>
       </div>
       <div className="space-y-2">
         <Label htmlFor="reason">{UI_TEXT.LEAVE.REASON}</Label>
@@ -144,8 +162,16 @@ export function LeaveForm({
           <p className="text-sm text-destructive">{errors.reason}</p>
         ) : null}
       </div>
-      <Button className="w-full" disabled={isSubmitting} type="submit">
-        {isSubmitting ? <Loader2Icon className="animate-spin" /> : <SendIcon />}
+      <Button
+        className="w-full"
+        disabled={isSubmitting || isLoadingBalance}
+        type="submit"
+      >
+        {isSubmitting || isLoadingBalance ? (
+          <Loader2Icon className="animate-spin" />
+        ) : (
+          <SendIcon />
+        )}
         {UI_TEXT.LEAVE.APPLY_SUBMIT}
       </Button>
     </form>

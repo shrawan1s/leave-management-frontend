@@ -9,6 +9,9 @@ import {
 } from "@/lib/auth";
 import type { ApiResponse, RetriableAxiosRequestConfig } from "@/types";
 
+/**
+ * Shared Axios instance configured with the backend base URL.
+ */
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
@@ -46,6 +49,7 @@ apiClient.interceptors.response.use(
       const refreshToken = getRefreshToken();
 
       if (refreshToken) {
+        // Mark the original request so a failed retry cannot loop forever.
         originalRequest.hasRetried = true;
 
         try {
@@ -60,6 +64,7 @@ apiClient.interceptors.response.use(
           );
 
           setAuthSession(refreshResponse.data.data);
+          // Replay the original request with the freshly rotated access token.
           originalRequest.headers.Authorization = `Bearer ${refreshResponse.data.data.token}`;
 
           return apiClient(originalRequest);
@@ -77,6 +82,9 @@ apiClient.interceptors.response.use(
   },
 );
 
+/**
+ * Extracts a human-readable API error message for toast feedback.
+ */
 export function getApiErrorMessage(error: unknown): string {
   if (axios.isAxiosError<ApiResponse<unknown>>(error)) {
     return error.response?.data.message ?? error.message;
