@@ -109,7 +109,7 @@ Protected employee and admin route groups use the shared `DashboardShell` sideba
 
 ### Employee Leave UI
 - `/dashboard` fetches leave balance and the recent 5 employee requests.
-- `/apply` fetches current balance, validates date range/reason/balance, and submits `POST /api/leave`.
+- `/apply` fetches current balance, disables submission until balance is loaded, validates date range/reason/balance, and submits `POST /api/leave`.
 - `/my-leaves` fetches `GET /api/leave/my` and renders the employee leave history table.
 - Leave dates are displayed as `DD MMM YYYY`; API date payloads use `YYYY-MM-DD`.
 - Status display must use the shared `StatusBadge` component.

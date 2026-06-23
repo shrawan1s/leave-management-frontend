@@ -81,6 +81,7 @@
 ## Form Rules
 - ALWAYS validate on the frontend before submitting
 - For leave form: validate `endDate >= startDate` and `days <= leaveBalance` before API call
+- Never validate leave balance against a fake `0` while balance is still loading
 - Show field-level error messages, not just toast errors
 - Disable submit button while request is in flight
 - Employee leave API calls must go through `lib/api/leave.ts`

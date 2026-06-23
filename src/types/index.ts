@@ -146,6 +146,7 @@ export interface LeaveTableProps {
 export interface LeaveFormProps {
   leaveBalance: number;
   onSubmit: (payload: CreateLeavePayload) => Promise<void>;
+  isLoadingBalance: boolean;
   isSubmitting: boolean;
 }
 

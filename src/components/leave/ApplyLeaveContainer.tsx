@@ -17,7 +17,8 @@ export function ApplyLeaveContainer() {
       <CardContent>
         <LeaveForm
           isSubmitting={isSubmitting}
-          leaveBalance={isLoading ? 0 : leaveBalance}
+          isLoadingBalance={isLoading}
+          leaveBalance={leaveBalance}
           onSubmit={createLeave}
         />
       </CardContent>

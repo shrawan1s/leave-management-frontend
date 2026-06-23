@@ -87,6 +87,7 @@ export const UI_TEXT = {
     END_DATE: "End date",
     EARNED: "Earned",
     LEAVE_TYPE: "Leave type",
+    LOADING_BALANCE: "Loading balance...",
     LOADING_REQUESTS: "Loading requests...",
     MY_LEAVES_TITLE: "Leave history",
     REJECT: "Reject",
